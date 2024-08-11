@@ -22,26 +22,37 @@ Follow these steps to install and run the app locally on your computer:
    Ensure Python and Django are installed on your system. Visit [Python's website](https://www.python.org/downloads/) and [Django's website](https://www.djangoproject.com/download/) for installation instructions.
 
 2. **Clone the repository:**
+
+   ```
    git clone https://github.com/xyzsniperr/ToDo-List.git
    cd ToDo-List
+   ```
 
     Set up and activate a virtual environment:
 
+   ```
     python -m venv venv
     source venv/bin/activate  # Or venv\Scripts\activate.bat on Windows
+   ```
 
 Install dependencies:
 
+```
 pip install -r requirements.txt
+```
 
 Initialize the database:
 
+```
 python manage.py makemigrations
 python manage.py migrate
+```
 
 Start the development server:
 
+   ```
     python manage.py runserver
+   ```
 
     Visit http://127.0.0.1:8000 in your web browser to use the app.
 
