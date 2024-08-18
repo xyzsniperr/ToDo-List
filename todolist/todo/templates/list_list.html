@@ -1,12 +1,37 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}ToDo Lists{% endblock %}
+{% block title %}{% trans "ToDo Lists" %}{% endblock %}
 
 {% block content %}
-    <h1 class="mb-4">ToDo Lists</h1>
+    <h1 class="mb-4">{% trans "ToDo Lists" %}</h1>
 
-    <button type="button" class="btn btn-primary mb-4" data-toggle="modal" data-target="#createListModal"><i class="fas fa-plus"></i> Neue Liste hinzufügen</button>
+    <button type="button" class="btn btn-primary mb-4" data-toggle="modal" data-target="#createListModal">
+        <i class="fas fa-plus"></i> {% trans "Neue Liste hinzufügen" %}
+    </button>
 
+    <form method="get" class="mb-4">
+        <div class="form-row">
+            <div class="col">
+                <label for="sort_by">{% trans "Sortieren nach:" %}</label>
+                <select name="sort_by" id="sort_by" class="form-control" onchange="this.form.submit()">
+                    <option value="name" {% if request.GET.sort_by == "name" %}selected{% endif %}>{% trans "Name (A-Z)" %}</option>
+                    <option value="-name" {% if request.GET.sort_by == "-name" %}selected{% endif %}>{% trans "Name (Z-A)" %}</option>
+                    <option value="created_at" {% if request.GET.sort_by == "created_at" %}selected{% endif %}>{% trans "Erstellungsdatum (Älteste zuerst)" %}</option>
+                    <option value="-created_at" {% if request.GET.sort_by == "-created_at" %}selected{% endif %}>{% trans "Erstellungsdatum (Neueste zuerst)" %}</option>
+                </select>
+            </div>
+            <div class="col">
+                <label for="filter_status">{% trans "Status filtern:" %}</label>
+                <select name="filter_status" id="filter_status" class="form-control" onchange="this.form.submit()">
+                    <option value="" {% if request.GET.filter_status == "" %}selected{% endif %}>{% trans "Alle" %}</option>
+                    <option value="open" {% if request.GET.filter_status == "open" %}selected{% endif %}>{% trans "Offen" %}</option>
+                    <option value="completed" {% if request.GET.filter_status == "completed" %}selected{% endif %}>{% trans "Erledigt" %}</option>
+                </select>
+            </div>
+        </div>
+    </form>
+    
     <ul class="list-group">
         {% for data in list_data %}
         <li class="list-group-item">
@@ -14,8 +39,8 @@
                 <div class="col-8">
                     <a href="/{{ data.list.id }}/" class="btn btn-link p-0">{{ data.list.name }}</a>
                     <div class="mt-2">
-                        <span class="badge badge-warning">Offen: {{ data.open_tasks }}</span>
-                        <span class="badge badge-success">Erledigt: {{ data.completed_tasks }}</span>
+                        <span class="badge badge-warning">{% trans "Offen" %}: {{ data.open_tasks }}</span>
+                        <span class="badge badge-success">{% trans "Erledigt" %}: {{ data.completed_tasks }}</span>
                     </div>
                 </div>
                 <div class="col-4 text-right">

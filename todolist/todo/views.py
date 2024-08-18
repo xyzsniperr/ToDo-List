@@ -19,7 +19,18 @@ def signup(request):
 
 @login_required
 def list_list(request):
+    sort_by = request.GET.get('sort_by', 'name')
+    filter_status = request.GET.get('filter_status', '')
+
     lists = List.objects.filter(user=request.user)
+
+    if filter_status == 'open':
+        lists = lists.filter(tasks__completed=False).distinct()
+    elif filter_status == 'completed':
+        lists = lists.filter(tasks__completed=True).distinct()
+
+    lists = lists.order_by(sort_by)
+
     list_data = []
     for lst in lists:
         open_tasks = lst.tasks.filter(completed=False).count()
@@ -29,8 +40,9 @@ def list_list(request):
             'open_tasks': open_tasks,
             'completed_tasks': completed_tasks,
         })
-    
+
     return render(request, 'list_list.html', {'list_data': list_data})
+
 
 @login_required
 def list_create(request):
@@ -53,9 +65,23 @@ def list_delete(request, list_id):
 
 @login_required
 def task_list(request, list_id):
-    list = get_object_or_404(List, id=list_id, user=request.user)
-    tasks = list.tasks.all()
-    return render(request, 'task_list.html', {'list': list, 'tasks': tasks})
+    list_ = get_object_or_404(List, id=list_id, user=request.user)
+    
+    # Standard-Sortierung und -Filter
+    sort_by = request.GET.get('sort_by', 'title')
+    filter_status = request.GET.get('filter_status', '')
+
+    tasks = list_.tasks.all()
+
+    if filter_status == 'open':
+        tasks = tasks.filter(completed=False)
+    elif filter_status == 'completed':
+        tasks = tasks.filter(completed=True)
+
+    tasks = tasks.order_by(sort_by)
+
+    return render(request, 'task_list.html', {'list': list_, 'tasks': tasks})
+
 
 @login_required
 def task_create(request, list_id):

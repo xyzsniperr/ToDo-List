@@ -1,43 +1,71 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Aufgabenliste{% endblock %}
+{% block title %}{% trans "Aufgabenliste" %}{% endblock %}
 
 {% block content %}
-<h1>{{ list.name }}</h1>
-<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createTaskModal"><i class="fas fa-plus"></i> Neue Aufgabe hinzufügen</a>
+    <h1>{{ list.name }}</h1>
+    <a href="#" class="btn btn-primary mb-3 mt-3" data-toggle="modal" data-target="#createTaskModal"><i class="fas fa-plus"></i> {% trans "Neue Aufgabe hinzufügen" %}</a>
 
-<ul class="list-group mt-4">
-    {% for task in tasks %}
-    <li class="list-group-item">
-        <div class="row">
-            <div class="col-1 d-flex align-items-center justify-content-center">
-                <input type="checkbox" class="form-check-input" id="completeTask{{ task.id }}" {% if task.completed %}checked{% endif %} data-task-id="{{ task.id }}">
+    <form method="get" class="mb-4">
+        <div class="form-row">
+            <div class="col">
+                <label for="sort_by">{% trans "Sortieren nach:" %}</label>
+                <select name="sort_by" id="sort_by" class="form-control" onchange="this.form.submit()">
+                    <option value="title" {% if request.GET.sort_by == "title" %}selected{% endif %}>{% trans "Titel (A-Z)" %}</option>
+                    <option value="-title" {% if request.GET.sort_by == "-title" %}selected{% endif %}>{% trans "Titel (Z-A)" %}</option>
+                    <option value="created_at" {% if request.GET.sort_by == "created_at" %}selected{% endif %}>{% trans "Erstellungsdatum (Älteste zuerst)" %}</option>
+                    <option value="-created_at" {% if request.GET.sort_by == "-created_at" %}selected{% endif %}>{% trans "Erstellungsdatum (Neueste zuerst)" %}</option>
+                </select>
             </div>
-            <div class="col-8">
-                <strong>{{ task.title }}</strong><br>
-                <div class="description-container">
-                    <small>{{ task.description|truncatewords:50 }}</small>
-                </div>
-                <span id="taskBadge{{ task.id }}" class="badge {{ task.completed|yesno:'badge-success,badge-warning' }}">
-                    {{ task.completed|yesno:'Erledigt,Offen' }}
-                </span>
-            </div>
-            <div class="col-3 text-right">
-                <a href="#" class="btn btn-warning btn-sm rounded-left" data-toggle="modal" data-target="#editTaskModal{{ task.id }}">
-                    <i class="fas fa-edit"></i>
-                </a>
-                <a href="#" class="btn btn-danger btn-sm rounded-right" data-toggle="modal" data-target="#deleteTaskModal{{ task.id }}">
-                    <i class="fas fa-trash"></i>
-                </a>
+            <div class="col">
+                <label for="filter_status">{% trans "Status filtern:" %}</label>
+                <select name="filter_status" id="filter_status" class="form-control" onchange="this.form.submit()">
+                    <option value="" {% if request.GET.filter_status == "" %}selected{% endif %}>{% trans "Alle" %}</option>
+                    <option value="open" {% if request.GET.filter_status == "open" %}selected{% endif %}>{% trans "Offen" %}</option>
+                    <option value="completed" {% if request.GET.filter_status == "completed" %}selected{% endif %}>{% trans "Erledigt" %}</option>
+                </select>
             </div>
         </div>
-    </li>    
-    {% endfor %}
-</ul>
+    </form>
 
-{% include 'modals/create_task_modal.html' %}
-{% for task in tasks %}
-    {% include 'modals/edit_task_modal.html' %}
-    {% include 'modals/delete_task_modal.html' %}
-{% endfor %}
+
+    <ul class="list-group mt-4">
+        {% for task in tasks %}
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-1 d-flex align-items-center justify-content-center">
+                    <input type="checkbox" class="form-check-input" id="completeTask{{ task.id }}" {% if task.completed %}checked{% endif %} data-task-id="{{ task.id }}">
+                </div>
+                <div class="col-8">
+                    <strong>{{ task.title }}</strong><br>
+                    <div class="description-container">
+                        <small>{{ task.description|truncatewords:50 }}</small>
+                    </div>
+                    <span id="taskBadge{{ task.id }}" class="badge {{ task.completed|yesno:'badge-success,badge-warning' }}">
+                        {% if task.completed %}
+                        {% trans "Erledigt" %}
+                        {% else %}
+                            {% trans "Offen" %}
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="col-3 text-right">
+                    <a href="#" class="btn btn-warning btn-sm rounded-left" data-toggle="modal" data-target="#editTaskModal{{ task.id }}">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="#" class="btn btn-danger btn-sm rounded-right" data-toggle="modal" data-target="#deleteTaskModal{{ task.id }}">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+        </li>    
+        {% endfor %}
+    </ul>
+
+    {% include 'modals/create_task_modal.html' %}
+    {% for task in tasks %}
+        {% include 'modals/edit_task_modal.html' %}
+        {% include 'modals/delete_task_modal.html' %}
+    {% endfor %}
 {% endblock %}

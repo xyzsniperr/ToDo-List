@@ -2,7 +2,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createListModalLabel">Neue Liste erstellen</h5>
+                <h5 class="modal-title" id="createListModalLabel">{% trans "Neue Liste erstellen" %}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -11,13 +11,13 @@
                 {% csrf_token %}
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="listName">Listenname</label>
-                        <input type="text" class="form-control" id="listName" name="name" placeholder="Name der neuen Liste" required>
+                        <label for="listName">{% trans "Listenname" %}</label>
+                        <input type="text" class="form-control" id="listName" name="name" placeholder="{% trans 'Name der neuen Liste' %}" required>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
-                    <button type="submit" class="btn btn-primary">Speichern</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Abbrechen" %}</button>
+                    <button type="submit" class="btn btn-primary">{% trans "Speichern" %}</button>
                 </div>
             </form>
         </div>
