@@ -1,31 +1,43 @@
+document.querySelectorAll('input[type="checkbox"]').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        const taskId = this.getAttribute('data-task-id')
+        const isChecked = this.checked
+
+        fetch(`/update_task_status/${taskId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken()
+            },
+            body: JSON.stringify({
+                'completed': isChecked
+            })
+        }).then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  const badge = document.querySelector(`#taskBadge${taskId}`)
+                  if (isChecked) {
+                      badge.classList.remove('badge-warning')
+                      badge.classList.add('badge-success')
+                      badge.textContent = 'Erledigt'
+                  } else {
+                      badge.classList.remove('badge-success')
+                      badge.classList.add('badge-warning')
+                      badge.textContent = 'Offen'
+                  }
+              } else {
+                Swal.fire({
+                    title: 'Es gab ein Problem beim Aktualisieren der Aufgabe.',
+                    text: 'Es gab ein Problem beim Aktualisieren der Aufgabe.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+              }
+          });
+    });
+});
+
+
 function getCsrfToken() {
     return document.querySelector('[name=csrfmiddlewaretoken]').value;
-}
-
-function confirmDelete(listId) {
-    Swal.fire({
-        title: 'Bist du sicher?',
-        text: "Diese Aktion kann nicht rückgängig gemacht werden!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Ja, löschen!',
-        cancelButtonText: 'Abbrechen'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/delete/' + listId + '/';
-            
-            const csrfToken = document.createElement('input');
-            csrfToken.type = 'hidden';
-            csrfToken.name = 'csrfmiddlewaretoken';
-            csrfToken.value = getCsrfToken();
-
-            form.appendChild(csrfToken);
-            document.body.appendChild(form);
-            form.submit();
-        }
-    })
 }

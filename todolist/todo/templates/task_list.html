@@ -4,21 +4,37 @@
 
 {% block content %}
 <h1>{{ list.name }}</h1>
-<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createTaskModal">Neue Aufgabe hinzufügen</a>
+<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createTaskModal"><i class="fas fa-plus"></i> Neue Aufgabe hinzufügen</a>
 
 <ul class="list-group mt-4">
     {% for task in tasks %}
-    <li class="list-group-item d-flex justify-content-between align-items-center">
-        {{ task.title }}
-        <span>
-            <a href="#" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editTaskModal{{ task.id }}">Bearbeiten</a>
-            <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteTaskModal{{ task.id }}">Löschen</a>
-        </span>
-    </li>
+    <li class="list-group-item">
+        <div class="row">
+            <div class="col-1 d-flex align-items-center justify-content-center">
+                <input type="checkbox" class="form-check-input" id="completeTask{{ task.id }}" {% if task.completed %}checked{% endif %} data-task-id="{{ task.id }}">
+            </div>
+            <div class="col-8">
+                <strong>{{ task.title }}</strong><br>
+                <div class="description-container">
+                    <small>{{ task.description|truncatewords:50 }}</small>
+                </div>
+                <span id="taskBadge{{ task.id }}" class="badge {{ task.completed|yesno:'badge-success,badge-warning' }}">
+                    {{ task.completed|yesno:'Erledigt,Offen' }}
+                </span>
+            </div>
+            <div class="col-3 text-right">
+                <a href="#" class="btn btn-warning btn-sm rounded-left" data-toggle="modal" data-target="#editTaskModal{{ task.id }}">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <a href="#" class="btn btn-danger btn-sm rounded-right" data-toggle="modal" data-target="#deleteTaskModal{{ task.id }}">
+                    <i class="fas fa-trash"></i>
+                </a>
+            </div>
+        </div>
+    </li>    
     {% endfor %}
 </ul>
 
-<!-- Modals einbinden -->
 {% include 'modals/create_task_modal.html' %}
 {% for task in tasks %}
     {% include 'modals/edit_task_modal.html' %}
