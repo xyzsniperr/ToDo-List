@@ -1,21 +1,40 @@
 from django.urls import path
-from .views import ItemListView, ToDoListView, ToDoCreateView, ItemCreateView
+from . import views
 
 urlpatterns = [
-        path(
-            'items/',
-            ItemListView.as_view(),
-            name='item_list'),
     path(
-        'items/new/', 
-        ItemCreateView.as_view(),
-        name='item_create'),
+        '',
+        views.list_list,
+        name='list_list'
+    ),
     path(
-        'items/<int:pk>/',
-        ToDoListView.as_view(),
-        name='todo_list'),
+        'create/',
+        views.list_create,
+        name='list_create'
+    ),
     path(
-        'items/<int:pk>/new/',
-        ToDoCreateView.as_view(),
-        name='todo_create'),
+        'delete/<int:list_id>/',
+        views.list_delete,
+        name='list_delete'
+    ),
+    path(
+        '<int:list_id>/',
+        views.task_list,
+        name='task_list'
+    ),
+    path(
+        '<int:list_id>/create/',
+        views.task_create,
+        name='task_create'
+    ),
+    path(
+        '<int:list_id>/update/<int:pk>/',
+        views.task_update,
+        name='task_update'
+    ),
+    path(
+        '<int:list_id>/delete/<int:pk>/',
+        views.task_delete,
+        name='task_delete'
+    ),
 ]

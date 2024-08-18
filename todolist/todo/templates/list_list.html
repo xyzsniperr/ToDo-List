@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}ToDo Lists{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">ToDo Lists</h1>
+
+    <button type="button" class="btn btn-primary mb-4" data-toggle="modal" data-target="#createListModal">
+        Neue Liste hinzufügen
+    </button>
+
+    <ul class="list-group">
+        {% for list in lists %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="/{{ list.id }}/" class="btn btn-link">{{ list.name }}</a>
+            <button type="button" class="btn btn-danger" onclick="confirmDelete({{ list.id }})">
+                Löschen
+            </button>
+        </li>
+        {% endfor %}
+    </ul>
+
+    {% include 'modals/create_list_modal.html' %}
+{% endblock %}
