@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My ToDo App{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>ToDo App</h1>
+        <nav>
+            <ul>
+                {% if user.is_authenticated %}
+                <form action="/logout" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
+                </form>                
+                {% else %}
+                    <li><a href="/login">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <main>
+        {% block content %}test{% endblock %}
+    </main>
+    <footer>
+        <p>© 2024</p>
+    </footer>
+</body>
+</html>
